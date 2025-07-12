@@ -26,7 +26,8 @@ public class UIManager : MonoBehaviour
     public Image ComboImage;
 
     public void UpdateScoreText(int score)
-    {  
+    {
+        if (ScoreText == null) return;
         ScoreText.text = "Score : " +  score;
     }
 

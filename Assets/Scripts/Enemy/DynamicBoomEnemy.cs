@@ -34,6 +34,7 @@ public class DynamicBoomEnemy : BaseEnemy
 
     private void EnemyExplode()
     {
+        if (damaged) return;
         PlayerManager player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>();
         player.TakeDamage(attackDamage);
         Destroy(gameObject);

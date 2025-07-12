@@ -1,7 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum PlayerState
 {
@@ -14,35 +14,37 @@ public enum PlayerState
 public class PlayerController : MonoBehaviour
 {
     public Transform arrowTransform;
-    public float arrowMoveSpeed = 2.0f;
-    public float arrowMoveAngle = 45.0f;
+    public float arrowMoveSpeed = 2f;
+    public float arrowMoveAngle = 45f;
 
     public float playerFlySpeed = 13f;
-    [SerializeField] 
-    private float playerMaxFlySpeed = 20f;
     public int playerAttackDamage = 1;
 
     private PlayerState playerState;
     public Rigidbody2D rb;
     public Animator animator;
     private float angleTimer = 0f;
-    private int arrowDirectionSign = 1;
     private Vector2 flyDirection;
+    private PlayerState prevState;
 
     public SpriteRenderer visualSprite;
     public Sprite deadSprite;
-    private PlayerState prevState;
+
+    public LayerMask enemyLayerMask;
+    public GameObject hitEffectPrefab;
+    private List<Collider2D> overlappedEnemies = new List<Collider2D>();
 
     void Start()
     {
         playerState = PlayerState.Aiming;
-        rb = gameObject.GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
         rb.constraints = RigidbodyConstraints2D.FreezeAll;
     }
 
     void Update()
     {
         if (!UIManager.Instance.FadeOutEnd) return;
+
         switch (playerState)
         {
             case PlayerState.Aiming:
@@ -51,6 +53,7 @@ public class PlayerController : MonoBehaviour
                 {
                     rb.constraints = RigidbodyConstraints2D.None;
                     rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+                    SoundManager.Instance.PlaySFX(SoundManager.Instance.playerAttack1);
                     PlayerFlying();
                 }
                 break;
@@ -58,7 +61,6 @@ public class PlayerController : MonoBehaviour
                 animator.SetTrigger("Fly");
                 rb.velocity = flyDirection * playerFlySpeed;
                 break;
-
             case PlayerState.Attack:
                 animator.SetTrigger("Attack");
                 rb.velocity = flyDirection * playerFlySpeed;
@@ -69,104 +71,125 @@ public class PlayerController : MonoBehaviour
 
     void AimArrow()
     {
-        angleTimer += Time.deltaTime * arrowMoveSpeed * arrowDirectionSign;
-        float angle = MathF.Sin(angleTimer) * arrowMoveAngle;
+        angleTimer += Time.deltaTime * arrowMoveSpeed;
+        float angle = Mathf.Sin(angleTimer) * arrowMoveAngle;
         arrowTransform.localRotation = Quaternion.Euler(0, 0, angle);
     }
 
     void PlayerFlying()
     {
-        if (playerState == PlayerState.Aiming)
-        {
-            playerState = PlayerState.Flying;
-            flyDirection = arrowTransform.up.normalized;
-            arrowTransform.localRotation = Quaternion.Euler(0, 0, 0);
-            arrowTransform.gameObject.SetActive(false);
-
-            UpdateVisualRotation(flyDirection);
-        }
+        playerState = PlayerState.Flying;
+        flyDirection = arrowTransform.up.normalized;
+        arrowTransform.localRotation = Quaternion.identity;
+        arrowTransform.gameObject.SetActive(false);
+        UpdateVisualRotation(flyDirection);
     }
 
-    void UpdateVisualRotation(Vector2 direction)
+    void UpdateVisualRotation(Vector2 dir)
     {
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-        // 왼쪽 기준 → 오른쪽 이동 시 flipX true
-        visualSprite.flipX = direction.x > 0;
-
-        // visualSprite 회전 초기화 (flip만 하려면 이 라인만 써도 됨)
+        visualSprite.flipX = dir.x > 0;
         visualSprite.transform.rotation = Quaternion.identity;
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
+    // --- 콜라이더 B: 적 트리거 감지용 ---
+    void OnTriggerEnter2D(Collider2D other)
     {
-        if (collision.collider.CompareTag("Enemy"))
+        if (other != null && other.gameObject.layer == LayerMask.NameToLayer("DynamicEnemy"))
+        {
+            if (!overlappedEnemies.Contains(other))
+            {
+                overlappedEnemies.Add(other);
+                SoundManager.Instance.PlaySFX(SoundManager.Instance.monsterHit2);
+                if (hitEffectPrefab != null)
+                    Instantiate(hitEffectPrefab, other.transform.position, Quaternion.identity);
+                if (other.GetComponent<Rigidbody2D>() != null)
+                {
+                    other.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+                    other.GetComponent<CapsuleCollider2D>().isTrigger = true;
+                }
+                other.gameObject.GetComponent<BaseEnemy>().damaged = true;
+            }
+        }
+    }
+
+    // --- 콜라이더 A: 물리 충돌용 ---
+    void OnCollisionEnter2D(Collision2D coll)
+    {
+        if (coll.collider != null && coll.collider.CompareTag("Enemy") && playerState == PlayerState.Aiming)
         {
             prevState = playerState;
             playerState = PlayerState.Attack;
-            if (collision.collider.GetComponent<BaseEnemy>().GetHealth() - playerAttackDamage <= 0)
+            var e = coll.collider.GetComponent<BaseEnemy>();
+            if (e != null)
             {
-                UIManager.Instance.SpawnComboText(collision.collider.gameObject.transform.Find("HeadPosition").transform, GetComponent<PlayerManager>().attackCombo);
+                if (e.GetHealth() - playerAttackDamage <= 0)
+                {
+                    UIManager.Instance.SpawnComboText(
+                        coll.collider.transform.Find("HeadPosition"),
+                        GetComponent<PlayerManager>().attackCombo);
+                }
+                e.TakeDamage(playerAttackDamage);
             }
-            collision.collider.GetComponent<BaseEnemy>().TakeDamage(playerAttackDamage);
-            
         }
-        
+
         if (playerState != PlayerState.Flying) return;
 
-        if (collision.collider.CompareTag("Obstacle"))
+        if (coll.collider != null && coll.collider.CompareTag("Obstacle"))
         {
             rb.velocity = Vector2.zero;
             rb.constraints = RigidbodyConstraints2D.FreezeAll;
             animator.ResetTrigger("Fly");
             animator.SetTrigger("Land");
-            ContactPoint2D contact = collision.contacts[0];
-            Vector2 normal = contact.normal;
-            float angle = Mathf.Atan2(normal.y, normal.x) * Mathf.Rad2Deg;
+
+            // 착지 회전
+            ContactPoint2D c = coll.contacts[0];
+            float angle = Mathf.Atan2(c.normal.y, c.normal.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0, 0, angle - 90);
+
+            // 겹친 적 처리
+            if(overlappedEnemies.Count == 0) SoundManager.Instance.PlaySFX(SoundManager.Instance.playerLand1); 
+            ProcessOverlaps();
+            overlappedEnemies.Clear();
 
             arrowTransform.gameObject.SetActive(true);
             rb.constraints = RigidbodyConstraints2D.None;
             playerState = PlayerState.Aiming;
-            
+
             visualSprite.transform.rotation = transform.rotation;
             visualSprite.flipX = false;
         }
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    void ProcessOverlaps()
     {
-        if (other.CompareTag("Enemy"))
+        foreach (var col in overlappedEnemies)
         {
-            prevState = playerState;
-            playerState = PlayerState.Attack;
-            if (other.GetComponent<BaseEnemy>().GetHealth() - playerAttackDamage <= 0)
+            if (col != null && col.gameObject != null)
             {
-                UIManager.Instance.SpawnComboText(other.gameObject.transform.Find("HeadPosition").transform, GetComponent<PlayerManager>().attackCombo);
+                var enemy = col.GetComponent<BaseEnemy>();
+                if (enemy != null)
+                {
+                    UIManager.Instance.SpawnComboText(
+                        col.transform.Find("HeadPosition"),
+                        GetComponent<PlayerManager>().attackCombo);
+                    enemy.TakeDamage(playerAttackDamage);
+                    if (enemy.deathPrefab != null)
+                    {
+                        Instantiate(enemy.deathPrefab, enemy.transform.position, Quaternion.identity);
+                        SoundManager.Instance.PlaySFX(SoundManager.Instance.playerLandAttack);
+                    }
+                }
             }
-            other.GetComponent<BaseEnemy>().TakeDamage(playerAttackDamage);
-            other.gameObject.GetComponent<BaseEnemy>().TakeDamage(playerAttackDamage);
         }
     }
 
     public void Die()
     {
-        // animator.gameObject.SetActive(false);
         playerState = PlayerState.Die;
         visualSprite.sprite = deadSprite;
-        Vector3 vec = visualSprite.gameObject.transform.position;
-        vec.y = -0.5f;
-        visualSprite.gameObject.transform.position = vec;
+        Vector3 p = visualSprite.transform.position;
+        p.y = -0.5f;
+        visualSprite.transform.position = p;
+        UnityEngine.SceneManagement.SceneManager.LoadScene(2);
     }
-
-    /*
-    public void ReflectArrow()
-    {
-        if (playerState == PlayerState.Aiming)
-        {
-            arrowDirectionSign *= -1;
-            float currentPhase = angleTimer % (2 * Mathf.PI);
-            angleTimer = (Mathf.PI - currentPhase) + (angleTimer - currentPhase);
-        }
-    }*/
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class GameManager : MonoBehaviour
     public int gameScore;
 
     public int survivalTime;
+    public int maxCombo;
     public UnLokcableArea[] unLockAreas;
     public int unLockedAreaCount;
     public int scorePerSecond;
@@ -35,6 +37,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        maxCombo = 0;
         scoreBuffer = 0;
         OnGameScoreAdd += DebugScore;
         survivalTime = 0;

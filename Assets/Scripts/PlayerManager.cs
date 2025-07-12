@@ -11,7 +11,7 @@ public class PlayerManager : MonoBehaviour
     public Image playerHealthBar;
 
     public int attackCombo;
-    public float comboDuration = 10f;
+    public float comboDuration = 13f;
     public float comboTimer = 0;
     public bool isCombo = false;
 
@@ -47,14 +47,10 @@ public class PlayerManager : MonoBehaviour
         }
         isCombo = true;
         attackCombo++;
-        if (comboDuration - (GameManager.Instance.survivalTime % 10) > 6)
-        {
-            comboTimer = (comboDuration - GameManager.Instance.survivalTime % 10);
-        }
-        else
-        {
-            comboTimer = 6f;
-        }
+        if (attackCombo > GameManager.Instance.maxCombo) GameManager.Instance.maxCombo = attackCombo;
+        comboDuration = comboDuration - GameManager.Instance.survivalTime % 10f;
+        comboDuration = Mathf.Clamp(comboDuration, 9f, comboDuration);
+        comboTimer = comboDuration;
         Debug.Log(attackCombo);
     }
 

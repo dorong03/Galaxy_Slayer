@@ -133,12 +133,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 1
   currentHealth: 0
-  attackDamage: 0
-  killingScore: 3000
-  explodeTime: 5
+  attackDamage: 20
+  killingScore: 800
+  damaged: 0
+  explodeTime: 8
   blinkDuration: 3
   blinkSpeed: 0.75
-  moveSpeed: 5
+  moveSpeed: 3
 --- !u!50 &1114971140631674576
 Rigidbody2D:
   serializedVersion: 4

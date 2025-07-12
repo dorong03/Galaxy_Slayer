@@ -13,6 +13,10 @@ public abstract class BaseEnemy : MonoBehaviour
     [SerializeField]
     protected int killingScore;
 
+    public bool damaged = false;
+
+    public GameObject deathPrefab;
+    
     private PlayerManager _playerManager;
     
     public virtual void Start()

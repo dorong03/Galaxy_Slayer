@@ -29,7 +29,7 @@ public class ErrorSpawner : MonoBehaviour
         while (true)
         {
             int unlocked = GameManager.Instance.unLockedAreaCount;
-            float interval = Mathf.Clamp(8f - unlocked, 5f, 8f);
+            float interval = Mathf.Clamp(7f - (GameManager.Instance.survivalTime / 10f), 5.5f, 7f);
             if (UIManager.Instance.FadeOutEnd)
             {
                 SpawnEnemies();

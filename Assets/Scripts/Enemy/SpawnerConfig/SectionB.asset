@@ -18,4 +18,6 @@ MonoBehaviour:
   maxSpawn: 2
   unitList:
   - prefab: {fileID: 5578113041554040868, guid: 482dd45857115ad4c826d01d1957daf4, type: 3}
-    spawnChance: 1
+    spawnChance: 0.5
+  - prefab: {fileID: 8347368638286870442, guid: e59b603521a1b954b9ac9c6bf05ea1ef, type: 3}
+    spawnChance: 0.5

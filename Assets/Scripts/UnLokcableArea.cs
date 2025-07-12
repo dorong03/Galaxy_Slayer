@@ -22,6 +22,7 @@ public class UnLokcableArea : MonoBehaviour
     {
         if(isUnLocked) return;
         isUnLocked = true;
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.mapExpansion1);
         StartCoroutine(CameraChange(newCameraSize, newCameraPosition, 1f));
     }
 

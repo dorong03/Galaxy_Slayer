@@ -24,7 +24,9 @@ public class StaticBoomEnemy : BaseEnemy
 
     private void EnemyExplode()
     {
+        if (damaged) return;
         PlayerManager player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>();
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.monsterExplosion);
         player.TakeDamage(attackDamage);
         GameObject.Destroy(gameObject);
     }
@@ -45,7 +47,7 @@ public class StaticBoomEnemy : BaseEnemy
         {
             float t = Mathf.PingPong(Time.time * (1f / blinkSpeed), 1f);
             float alpha = Mathf.Lerp(minAlpha, maxAlpha, t);
-
+            SoundManager.Instance.PlaySFX(SoundManager.Instance.monsterWarning);
             Color c = sp.color;
             c.a = alpha;
             sp.color = c;

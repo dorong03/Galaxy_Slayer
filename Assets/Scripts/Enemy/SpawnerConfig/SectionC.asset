@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnerPosition: {x: 5.3, y: 3, z: 0}
   spawnerSize: {x: 27.5, y: 15, z: 0}
-  minSpawn: 1
-  maxSpawn: 2
+  minSpawn: 2
+  maxSpawn: 3
   unitList:
   - prefab: {fileID: 5578113041554040868, guid: 482dd45857115ad4c826d01d1957daf4, type: 3}
     spawnChance: 0.5

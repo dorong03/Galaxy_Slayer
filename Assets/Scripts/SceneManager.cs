@@ -11,7 +11,7 @@ public class SceneManager : MonoBehaviour
     public Image panel;
     
     public SpriteRenderer blink;
-    private float minAlpha = 100f / 255f;
+    private float minAlpha = 50f / 255f;
     private float maxAlpha = 150f / 255f;
     
     void Update()
@@ -32,6 +32,7 @@ public class SceneManager : MonoBehaviour
     void TitleStart()
     {
         StartCoroutine(FadeInPanel());
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.titleStart2);
     }
 
     void EndFade()
