@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 2464613198581900953}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 2.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -136,6 +136,7 @@ MonoBehaviour:
   attackDamage: 20
   killingScore: 800
   damaged: 0
+  deathPrefab: {fileID: 2758726783298738719, guid: 965db3d640a9e1041bbfc705972cffea, type: 3}
   explodeTime: 8
   blinkDuration: 3
   blinkSpeed: 0.75

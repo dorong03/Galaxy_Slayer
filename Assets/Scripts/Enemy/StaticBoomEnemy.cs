@@ -39,17 +39,26 @@ public class StaticBoomEnemy : BaseEnemy
     private IEnumerator CorutineBlink()
     {
         float timer = 0;
-        Color orginColor = sp.color;
-        float minAlpha = 0.3f;
-        float maxAlpha = 1f;
+        Color originColor = sp.color;
+        float minGB = 100f / 255f;
+        float maxGB = 200f / 255f;
+        float soundTimer = 0f;
 
         while (timer < blinkDuration)
         {
             float t = Mathf.PingPong(Time.time * (1f / blinkSpeed), 1f);
-            float alpha = Mathf.Lerp(minAlpha, maxAlpha, t);
-            SoundManager.Instance.PlaySFX(SoundManager.Instance.monsterWarning);
+            float gbValue = Mathf.Lerp(minGB, maxGB, t);
+
+            soundTimer += Time.deltaTime;
+            if (soundTimer >= 1f)
+            {
+                SoundManager.Instance.PlaySFX(SoundManager.Instance.monsterWarning);
+                soundTimer = 0f;
+            }
+
             Color c = sp.color;
-            c.a = alpha;
+            c.g = gbValue;
+            c.b = gbValue;
             sp.color = c;
 
             timer += Time.deltaTime;

@@ -385,9 +385,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 60a2bf620ca83ab43b6464446ebfb516, type: 3}
+  m_audioClip: {fileID: 8300000, guid: adffb2c73d857df4b95e480396ec8620, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.357
+  m_Volume: 0.35
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -1308,7 +1308,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.05490196, g: 0, b: 0.19215687, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -3234,7 +3234,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: acae295ac8eb44b42834c9a74bbe4c24, type: 3}
     m_FontSize: 60
     m_FontStyle: 0
     m_BestFit: 0
@@ -3810,11 +3810,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   poolSize: 10
-  mapExpansion1: {fileID: 8300000, guid: 874dc1091a03cd84b897c1c9bccd6b6f, type: 3}
+  mapExpansion1: {fileID: 8300000, guid: 7492781a0bf45d74ab2e16a74448e513, type: 3}
   monsterHit2: {fileID: 8300000, guid: 799f1d2033f9a454fa873d78e6962396, type: 3}
-  monsterWarning: {fileID: 8300000, guid: 303781c6fff11ab4595ed6f7a753a924, type: 3}
+  monsterWarning: {fileID: 8300000, guid: 4bcb10dc3c47a4a4aab359f7c9d8900d, type: 3}
   monsterExplosion: {fileID: 8300000, guid: 70f0ad19fd034c543833c6fc832fea74, type: 3}
-  playerAttack1: {fileID: 8300000, guid: 047e62b19b4000840aab1e564fa67f1f, type: 3}
+  playerAttack1: {fileID: 8300000, guid: 2c48e696825ec7648ac6a8a26fe82f4e, type: 3}
   playerLand1: {fileID: 8300000, guid: e5c9ba332f0d815488fe563485054ea7, type: 3}
   playerLandAttack: {fileID: 8300000, guid: 75b320ebda4e2c54a9504d02c619e2cb, type: 3}
   titleStart2: {fileID: 8300000, guid: 5e720e6800d0a234895cba7b56396017, type: 3}

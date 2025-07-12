@@ -12,8 +12,10 @@ public class Test : MonoBehaviour
     
     public void LoadStartScene()
     {
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.gameOverRetry);
         UnityEngine.SceneManagement.SceneManager.LoadScene(0);
         Destroy(GameManager.Instance.gameObject);
+        Destroy(UIManager.Instance.gameObject);
     }
 
     void Start()

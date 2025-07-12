@@ -6,7 +6,7 @@ public class SoundManager : MonoBehaviour
     public static SoundManager Instance;
 
     [Header("Audio Sources")]
-    [SerializeField] private int poolSize = 10;
+    [SerializeField] private int poolSize = 25;
     private List<AudioSource> audioPool;
 
     [Header("Audio Clips")] 

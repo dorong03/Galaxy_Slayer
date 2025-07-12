@@ -36,6 +36,7 @@ public class DynamicBoomEnemy : BaseEnemy
     {
         if (damaged) return;
         PlayerManager player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>();
+        SoundManager.Instance.PlaySFX(SoundManager.Instance.monsterExplosion);
         player.TakeDamage(attackDamage);
         Destroy(gameObject);
     }
@@ -48,22 +49,32 @@ public class DynamicBoomEnemy : BaseEnemy
     private IEnumerator CoroutineBlink()
     {
         float timer = 0f;
-        float minAlpha = 0.3f;
-        float maxAlpha = 1f;
+        float minColor = 100f / 255f;
+        float maxColor = 200f / 255f;
+        float soundTimer = 0f;
 
         while (timer < blinkDuration)
         {
+            soundTimer += Time.deltaTime;
+            if (soundTimer >= 1f)
+            {
+                SoundManager.Instance.PlaySFX(SoundManager.Instance.monsterWarning);
+                soundTimer = 0f;
+            }
+
             float t = Mathf.PingPong(Time.time * (1f / blinkSpeed), 1f);
-            float alpha = Mathf.Lerp(minAlpha, maxAlpha, t);
+            float gbValue = Mathf.Lerp(minColor, maxColor, t);
 
             Color c = sp.color;
-            c.a = alpha;
+            c.g = gbValue;
+            c.b = gbValue;
             sp.color = c;
 
             timer += Time.deltaTime;
             yield return null;
         }
     }
+
 
     private void OnCollisionEnter2D(Collision2D other)
     {
