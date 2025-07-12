@@ -1283,6 +1283,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420033}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1364,6 +1365,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519420033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f624358dd4c64fd4cb4e4260b8cb87b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shakeDuration: 0.3
+  shakeMagnitude: 0.2
+  originalPos: {x: 0, y: 0, z: 0}
 --- !u!1001 &531387218
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1898,6 +1914,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   hitEffectPrefab: {fileID: 7405739601559475571, guid: 3725e9bbff9abd04d9627a9995f6b838, type: 3}
+  cameraShake: {fileID: 0}
 --- !u!61 &601158987
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2382,7 +2399,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &813580746
 RectTransform:
   m_ObjectHideFlags: 0

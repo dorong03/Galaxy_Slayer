@@ -24,6 +24,7 @@ public class UnLokcableArea : MonoBehaviour
         isUnLocked = true;
         SoundManager.Instance.PlaySFX(SoundManager.Instance.mapExpansion1);
         StartCoroutine(CameraChange(newCameraSize, newCameraPosition, 1f));
+        Camera.main.GetComponent<CameraShake>().originalPos = newCameraPosition;
     }
 
     IEnumerator CameraChange(float CameraSize, Vector3 CameraPosition, float time)

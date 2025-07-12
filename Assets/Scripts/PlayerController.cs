@@ -34,11 +34,14 @@ public class PlayerController : MonoBehaviour
     public GameObject hitEffectPrefab;
     private List<Collider2D> overlappedEnemies = new List<Collider2D>();
 
+    public CameraShake cameraShake;
+
     void Start()
     {
         playerState = PlayerState.Aiming;
         rb = GetComponent<Rigidbody2D>();
         rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        cameraShake = Camera.main.GetComponent<CameraShake>();
     }
 
     void Update()
@@ -96,18 +99,29 @@ public class PlayerController : MonoBehaviour
     {
         if (other != null && other.gameObject.layer == LayerMask.NameToLayer("DynamicEnemy"))
         {
-            if (!overlappedEnemies.Contains(other))
+            if (playerState != PlayerState.Aiming)
             {
-                overlappedEnemies.Add(other);
+                if (!overlappedEnemies.Contains(other))
+                {
+                    overlappedEnemies.Add(other);
+                    SoundManager.Instance.PlaySFX(SoundManager.Instance.monsterHit2);
+                    if (hitEffectPrefab != null)
+                        Instantiate(hitEffectPrefab, other.transform.position, Quaternion.identity);
+                    if (other.GetComponent<Rigidbody2D>() != null)
+                    {
+                        other.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+                        other.GetComponent<CapsuleCollider2D>().isTrigger = true;
+                    }
+
+                    other.gameObject.GetComponent<BaseEnemy>().damaged = true;
+                }
+            }
+            else
+            {
                 SoundManager.Instance.PlaySFX(SoundManager.Instance.monsterHit2);
                 if (hitEffectPrefab != null)
                     Instantiate(hitEffectPrefab, other.transform.position, Quaternion.identity);
-                if (other.GetComponent<Rigidbody2D>() != null)
-                {
-                    other.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-                    other.GetComponent<CapsuleCollider2D>().isTrigger = true;
-                }
-                other.gameObject.GetComponent<BaseEnemy>().damaged = true;
+                other.GetComponent<BaseEnemy>().TakeDamage(playerAttackDamage);
             }
         }
     }
@@ -147,8 +161,16 @@ public class PlayerController : MonoBehaviour
             transform.rotation = Quaternion.Euler(0, 0, angle - 90);
 
             // 겹친 적 처리
-            if(overlappedEnemies.Count == 0) SoundManager.Instance.PlaySFX(SoundManager.Instance.playerLand1); 
-            ProcessOverlaps();
+            if (overlappedEnemies.Count == 0)
+            {
+                SoundManager.Instance.PlaySFX(SoundManager.Instance.playerLand1);
+            }
+            else
+            {
+                ProcessOverlaps();
+                cameraShake.Shake();
+            }
+            
             overlappedEnemies.Clear();
 
             arrowTransform.gameObject.SetActive(true);
