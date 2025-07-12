@@ -10,10 +10,14 @@ public class PlayerManager : MonoBehaviour
     public int playerCurrentHealth;
     public Image playerHealthBar;
 
+    public int attackCombo;
+    public float comboDuration = 11f;
+    
     public event Action OnPlayerDamaged;
 
     void Start()
     {
+        attackCombo = 0;
         playerCurrentHealth = playerMaxHealth;
     }
 

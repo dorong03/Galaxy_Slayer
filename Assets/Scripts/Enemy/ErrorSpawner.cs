@@ -45,8 +45,8 @@ public class ErrorSpawner : MonoBehaviour
         {
             Vector3 spawnPosition = GetRandomPositionInArea(config);
 
-            if (Vector3.Distance(spawnPosition, player.position) < safeDistanceFromPlayer ||
-                Physics.CheckSphere(spawnPosition, checkRadius, obstacleMask))
+            if (Vector2.Distance(spawnPosition, player.position) < safeDistanceFromPlayer ||
+                Physics2D.OverlapCircle(spawnPosition, checkRadius, obstacleMask))
             {
                 attempts++;
                 continue;

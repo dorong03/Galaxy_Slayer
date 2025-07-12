@@ -10,6 +10,8 @@ public class UnLokcableArea : MonoBehaviour
     public Vector3 newCameraPosition;
     public bool isUnLocked = false;
     public Camera cam;
+    public SpriteRenderer[] blinkSprite;
+    public PlayerManager playerManager;
 
     void Start()
     {
@@ -20,8 +22,51 @@ public class UnLokcableArea : MonoBehaviour
     {
         if(isUnLocked) return;
         isUnLocked = true;
-        gameObject.SetActive(false); 
-        cam.orthographicSize = newCameraSize;
-        cam.transform.position = newCameraPosition;
+        
+        // 콤보 시간 줄이기
+        playerManager.comboDuration -= 1;
+        
+        StartCoroutine(CameraChange(newCameraSize, newCameraPosition, 1f));
+    }
+
+    IEnumerator CameraChange(float CameraSize, Vector3 CameraPosition, float time)
+    {
+        float elapsed = 0f;
+        float startSize = cam.orthographicSize;
+        Vector3 startPos = cam.transform.position;
+
+        Color[] originColors = new Color[blinkSprite.Length];
+        for (int i = 0; i < blinkSprite.Length; i++)
+        {
+            originColors[i] = blinkSprite[i].color;
+        }
+
+        while(elapsed < time)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / time;
+            t = Mathf.SmoothStep(0, 1, t);
+
+            cam.orthographicSize = Mathf.Lerp(startSize, CameraSize, t);
+            cam.transform.position = Vector3.Lerp(startPos, CameraPosition, t);
+            for (int i = 0; i < blinkSprite.Length; i++)
+            {
+                Color c = originColors[i];
+                c.a = Mathf.Lerp(1f, 0f, t);
+                blinkSprite[i].color = c;
+            }
+            yield return null;
+        }
+
+
+        for (int i = 0; i < blinkSprite.Length; i++)
+        {
+            Color c = originColors[i];
+            c.a = 0;
+            blinkSprite[i].color = c;
+        }
+        cam.orthographicSize = CameraSize;
+        cam.transform.position = CameraPosition;
+        gameObject.SetActive(false);
     }
 }
