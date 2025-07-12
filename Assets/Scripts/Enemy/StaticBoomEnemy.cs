@@ -13,8 +13,8 @@ public class StaticBoomEnemy : BaseEnemy
     private float blinkSpeed = 0.75f;
 
     private SpriteRenderer sp;
-    
-    void Start()
+
+    public override void Start()
     {
         base.Start();
         sp = GetComponent<SpriteRenderer>();

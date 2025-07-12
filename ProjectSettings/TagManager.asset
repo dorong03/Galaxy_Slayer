@@ -13,8 +13,8 @@ TagManager:
   - Obstacle
   - Water
   - UI
-  - 
-  - 
+  - Player
+  - DynamicEnemy
   - 
   - 
   - 

@@ -12,10 +12,13 @@ public abstract class BaseEnemy : MonoBehaviour
     protected int attackDamage;
     [SerializeField]
     protected int killingScore;
+
+    private PlayerManager _playerManager;
     
-    protected virtual void Start()
+    public virtual void Start()
     {
         currentHealth = maxHealth;
+        _playerManager = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerManager>();
     }
 
     public virtual void TakeDamage(int damage)
@@ -26,11 +29,17 @@ public abstract class BaseEnemy : MonoBehaviour
             Die();
         }
     }
+
+    public virtual float GetHealth()
+    {
+        return currentHealth;
+    }
     
     protected virtual void Die()
     {
         GameManager.Instance.AddGameScore(killingScore);
         Debug.Log("gdfhzb");
+        _playerManager.UpdateComboTimer();
         Destroy(gameObject);
     }
 }

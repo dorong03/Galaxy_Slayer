@@ -8,14 +8,17 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     [SerializeField]
-    private int gameScore;
+    public int gameScore;
 
+    public int survivalTime;
     public UnLokcableArea[] unLockAreas;
-    public int unLockedAreaCount = 0;
+    public int unLockedAreaCount;
     public int scorePerSecond;
     private float scoreBuffer;
 
     public event Action OnGameScoreAdd;
+    float timer = 0;
+    int interval = 1;
     
     void Awake()
     {
@@ -34,10 +37,14 @@ public class GameManager : MonoBehaviour
     {
         scoreBuffer = 0;
         OnGameScoreAdd += DebugScore;
+        survivalTime = 0;
+        unLockedAreaCount = 0;
     }
 
     void Update()
     {
+        if (!UIManager.Instance.FadeOutEnd) return;
+        
         scoreBuffer += scorePerSecond * Time.deltaTime;
         if (scoreBuffer >= 1f)
         {
@@ -45,11 +52,20 @@ public class GameManager : MonoBehaviour
             AddGameScore(increase);
             scoreBuffer -= increase;
         }
+        
+        timer += Time.deltaTime;
+        if (timer > interval)
+        {
+            survivalTime++;
+            timer -= interval;
+            Debug.Log(survivalTime);
+        }
     }
     
     public void AddGameScore(int score)
     {
         gameScore += score;
+        UIManager.Instance.UpdateScoreText(gameScore);
         OnGameScoreAdd?.Invoke();
     }
     

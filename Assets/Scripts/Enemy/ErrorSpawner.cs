@@ -16,18 +16,24 @@ public class ErrorSpawner : MonoBehaviour
 
     private void Start()
     {
-        spawnCoroutine = StartCoroutine(SpawnLoop());
+        Invoke("StartSpawnLoop",1.5f);
     }
 
+    void StartSpawnLoop()
+    {
+        StartCoroutine(SpawnLoop());
+    }
+    
     private IEnumerator SpawnLoop()
     {
         while (true)
         {
             int unlocked = GameManager.Instance.unLockedAreaCount;
-            float interval = Mathf.Clamp(10f - unlocked, 1f, 10f);
-
-            SpawnEnemies();
-
+            float interval = Mathf.Clamp(8f - unlocked, 5f, 8f);
+            if (UIManager.Instance.FadeOutEnd)
+            {
+                SpawnEnemies();
+            }
             yield return new WaitForSeconds(interval);
         }
     }

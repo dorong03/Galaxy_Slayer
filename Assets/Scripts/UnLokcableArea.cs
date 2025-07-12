@@ -22,10 +22,6 @@ public class UnLokcableArea : MonoBehaviour
     {
         if(isUnLocked) return;
         isUnLocked = true;
-        
-        // 콤보 시간 줄이기
-        playerManager.comboDuration -= 1;
-        
         StartCoroutine(CameraChange(newCameraSize, newCameraPosition, 1f));
     }
 
