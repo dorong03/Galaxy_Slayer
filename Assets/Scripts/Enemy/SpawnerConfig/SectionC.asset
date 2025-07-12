@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48492d4671aee21499476cf9435a6207, type: 3}
+  m_Name: SectionC
+  m_EditorClassIdentifier: 
+  spawnerPosition: {x: 5.3, y: 3, z: 0}
+  spawnerSize: {x: 27.5, y: 15, z: 0}
+  minSpawn: 1
+  maxSpawn: 2
+  unitList:
+  - prefab: {fileID: 5578113041554040868, guid: 482dd45857115ad4c826d01d1957daf4, type: 3}
+    spawnChance: 0.5
+  - prefab: {fileID: 8347368638286870442, guid: e59b603521a1b954b9ac9c6bf05ea1ef, type: 3}
+    spawnChance: 0.5
