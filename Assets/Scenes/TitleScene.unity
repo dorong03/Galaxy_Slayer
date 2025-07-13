@@ -1001,7 +1001,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04f1068300a11ae4da44db691ea72b2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poolSize: 10
+  poolSize: 25
   mapExpansion1: {fileID: 8300000, guid: 7492781a0bf45d74ab2e16a74448e513, type: 3}
   monsterHit2: {fileID: 8300000, guid: 799f1d2033f9a454fa873d78e6962396, type: 3}
   monsterWarning: {fileID: 8300000, guid: 4bcb10dc3c47a4a4aab359f7c9d8900d, type: 3}

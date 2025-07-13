@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.SceneManagement;
 
 public enum PlayerState
@@ -36,16 +37,36 @@ public class PlayerController : MonoBehaviour
 
     public CameraShake cameraShake;
 
+    public PostProcessVolume volume;
+
+    private Vignette vignette;
+    
+    public float minIntensity = 0.6f;
+    public float maxIntensity = 0.7f;
+    public float period = 1.5f; // 한 사이클 주기 = 1.5초
+
+    private bool isRunning = false;
+    private float startTime;
+
     void Start()
     {
         playerState = PlayerState.Aiming;
         rb = GetComponent<Rigidbody2D>();
         rb.constraints = RigidbodyConstraints2D.FreezeAll;
         cameraShake = Camera.main.GetComponent<CameraShake>();
+        volume.profile.TryGetSettings(out vignette);
     }
 
     void Update()
     {
+        if (isRunning)
+        {
+            float elapsed = Time.time - startTime;
+            // 사인 함수로 0~1 사이 t 값 생성
+            float t = (Mathf.Sin(elapsed * (2 * Mathf.PI / period)) * 0.5f + 0.5f);
+            vignette.intensity.value = Mathf.Lerp(minIntensity, maxIntensity, t);
+        }
+
         if (!UIManager.Instance.FadeOutEnd) return;
 
         switch (playerState)
@@ -197,12 +218,31 @@ public class PlayerController : MonoBehaviour
                     enemy.TakeDamage(playerAttackDamage);
                     if (enemy.deathPrefab != null)
                     {
+                        Debug.Log("DeathPRefab");
                         Instantiate(enemy.deathPrefab, enemy.transform.position, Quaternion.identity);
                         SoundManager.Instance.PlaySFX(SoundManager.Instance.playerLandAttack);
                     }
                 }
             }
         }
+    }
+    
+    // 호출 시 진동 시작
+    public void OnPlayerHit()
+    {
+        isRunning = true;
+        startTime = Time.time;
+        if (!(GetComponent<PlayerManager>().playerCurrentHealth <= 20))
+        {
+            Invoke("StopOscillation", 1.2f);    
+        }
+    }
+
+    // 호출 시 진동 종료
+    public void StopOscillation()
+    {
+        isRunning = false;
+        vignette.intensity.Override(minIntensity);
     }
 
     public void Die()
@@ -212,6 +252,7 @@ public class PlayerController : MonoBehaviour
         Vector3 p = visualSprite.transform.position;
         p.y = -0.5f;
         visualSprite.transform.position = p;
+        Destroy(UIManager.Instance.gameObject);
         UnityEngine.SceneManagement.SceneManager.LoadScene(2);
     }
 }

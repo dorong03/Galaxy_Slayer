@@ -15,7 +15,6 @@ public class Test : MonoBehaviour
         SoundManager.Instance.PlaySFX(SoundManager.Instance.gameOverRetry);
         UnityEngine.SceneManagement.SceneManager.LoadScene(0);
         Destroy(GameManager.Instance.gameObject);
-        Destroy(UIManager.Instance.gameObject);
     }
 
     void Start()

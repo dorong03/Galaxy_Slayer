@@ -46,6 +46,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        if (UIManager.Instance == null) return;
         if (!UIManager.Instance.FadeOutEnd) return;
         
         scoreBuffer += scorePerSecond * Time.deltaTime;
